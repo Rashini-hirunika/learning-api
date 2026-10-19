@@ -1,27 +1,23 @@
+
 import jwt from 'jsonwebtoken';
+import User from '../models/user.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secret_key_here';
+export const protect = async (req, res, next) => {
+  let token;
 
-export const verifyToken = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({
-            success: false,
-            message: "Access denied. No token provided."
-        });
-    }
-
-    const token = authHeader.split(' ')[1];
-
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        req.user = decoded; // Attach user info to request
-        next();
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret123');
+
+      req.user = await User.findById(decoded.id).select('-password');
+      next();
     } catch (error) {
-        return res.status(403).json({
-            success: false,
-            message: "Invalid or expired token."
-        });
+      return res.status(401).json({ success: false, message: 'Not authorized, token failed' });
     }
+  }
+
+  if (!token) {
+    return res.status(401).json({ success: false, message: 'Not authorized, no token' });
+  }
 };
