@@ -10,7 +10,8 @@
     "migrate": "node src/database/migrate.js",
     "seed": "node src/database/seed.js",
     "db:setup": "node src/database/migrate.js && node src/database/seed.js",
-    "db:reset": "node src/database/reset.js"
+    "db:reset": "node src/database/reset.js",
+    "test": "jest --detectOpenHandles --forceExit"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -23,6 +24,8 @@
     "mysql2": "^3.24.5"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.14",
+    "supertest": "^6.3.4"
   }
 }
