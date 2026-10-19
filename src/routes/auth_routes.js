@@ -1,14 +1,22 @@
+
 import express from 'express';
-import { register, login, getProfile, updateProfile, logout } from '../controllers/authController.js';
-import { registerValidation, loginValidation } from '../validators/authValidator.js';
-import { verifyToken } from '../middlewares/authMiddleware.js';
+import { 
+  registerUser, 
+  loginUser, 
+  getUserProfile, 
+  updateUserProfile, 
+  logoutUser 
+} from '../controllers/auth_controller.js';
+import { protect } from '../middleware/auth_middleware.js';
 
 const router = express.Router();
 
-router.post('/register', registerValidation, register);
-router.post('/login', loginValidation, login);
-router.get('/profile', verifyToken, getProfile);       // Protected View Profile
-router.put('/profile', verifyToken, updateProfile);    // Protected Update Profile
-router.post('/logout', verifyToken, logout);           // Logout
+router.post('/register', registerUser);
+router.post('/login', loginUser);
+
+// Protected Routes (Bearer Token required)
+router.get('/profile', protect, getUserProfile);
+router.put('/profile', protect, updateUserProfile);
+router.post('/logout', protect, logoutUser);
 
 export default router;
