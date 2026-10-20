@@ -11,7 +11,7 @@
     "seed": "node src/database/seed.js",
     "db:setup": "node src/database/migrate.js && node src/database/seed.js",
     "db:reset": "node src/database/reset.js",
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
