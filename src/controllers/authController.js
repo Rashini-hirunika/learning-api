@@ -1,25 +1,31 @@
+
 import User from '../models/user.js';
 import jwt from 'jsonwebtoken';
 
+// Generate JWT Token helper function
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET || 'secret123', {
     expiresIn: '1d',
   });
 };
 
+// User Login API
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Check if email and password are provided
     if (!email || !password) {
       return res.status(400).json({ success: false, message: 'Email and password are required' });
     }
 
+    // Find user in the database
     const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
+    // Send successful response with token
     res.status(200).json({
       success: true,
       message: 'Login successful',
